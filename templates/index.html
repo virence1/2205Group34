@@ -37,6 +37,15 @@
 <!--- header div end (Modify start) -->
 <div class="panel-wrap">
   <div class="panel-wrapper">
+    
+    <h2>Current Vote Count</h2>
+    <div id="vote-count-a"></div>
+    <div id="vote-count-b"></div>
+    <div id="vote-count-c"></div>
+  
+    <script src="app.js"></script>
+
+
     <div class="panel marRight30">
       <div class="img"><img src="{{url_for('static',filename='images/koala.png')}}" width="250" height="250"/></div>
       <div class="title">
@@ -46,8 +55,8 @@
       <div class="content">
         <p>"	Our Lives, Our Jobs, Our Future"</p>
           <!--- <div class="button-link"><a href="#">readmore</a></div> -->
-          <button class="button button1 marLeft70"onclick="showConfirmation()">
-            <a href="confirmation.html">Vote</a>
+           <button class="button button1 marLeft70" onclick="voteA++; displayVotes(); ">
+            <a href="confirmation.html">Vote for A</a>
         </button>
       </div>
     </div>
@@ -61,8 +70,8 @@
         <p>"Make Your Vote Count"<br />
         </p>
       <!--- <div class="button-link"><a href="#">readmore</a></div> -->
-      <button class="button button1 marLeft70">
-        <a href="confirmation.html">Vote</a>
+      <button class="button button1 marLeft70" onclick="voteA++; displayVotes(); ">
+        <a href="confirmation.html">Vote for B</a>
       </div>
     </div>
     <div class="panel">
@@ -74,8 +83,9 @@
       <div class="content">
         <p>"For Country, For People"</p>
         <!--- <div class="button-link"><a href="#">readmore</a></div> -->
-        <button class="button button1 marLeft70">
-          <a href="confirmation.html">Vote</a>
+        <button class="button button1 marLeft70" onclick="voteA++; displayVotes(); ">
+          <a href="confirmation.html">Vote for C</a>
+        </button>
       </div>
     </div>
   </div>
