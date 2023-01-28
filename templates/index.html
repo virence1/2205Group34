@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TMPH00014</title>
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css" />
+<link href='http://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+</head>
+<body>
+<div class="header">
+  <div class="header-left-panel">
+    <div class="logo-wrap">
+      <div class="logo">
+        <h2>"YOUR VOTE MATTERS"</h2>
+        <h1>Digital Democracy Defenders</h1>
+      </div>
+    </div>
+  </div>
+  <div class="header-right-panel">
+    <div class="header-right-panel-top">
+      <p>Call Us : 0000 0000 
+      <p> <a href="#">Mail Us : 2102536@sit.singaporetech.edu.sg</a> 
+    </div>
+    <div class="menu">
+      <ul>
+        <li class="marRight20"><a class="active" href="{{url_for('index')}}">home</a></li>
+        <li class="marRight20"><a href="{{url_for('about')}}">about</a></li>
+        <li><a href="services.html">login</a></li>
+        <li class="marRight20"><a href="features.html">TEST</a></li>
+        <li class="marRight20"><a href="#">TEST</a></li>
+        <li><a href="contact.html">TEST</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<!--- header div end (Modify start) -->
+<div class="panel-wrap">
+  <div class="panel-wrapper">
+    <div class="panel marRight30">
+      <div class="img"><img src="{{url_for('static',filename='images/koala.png')}}" width="250" height="250"/></div>
+      <div class="title">
+        <h1>Koala's Party</h1>
+      </div>
+      <div class="border"></div>
+      <div class="content">
+        <p>"	Our Lives, Our Jobs, Our Future"</p>
+          <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+          <button class="button button1 marLeft70"onclick="showConfirmation()">
+            <a href="confirmation.html">Vote</a>
+        </button>
+      </div>
+    </div>
+    <div class="panel marRight30">
+      <div class="img"><img src="{{url_for('static',filename='images/bee.png')}}" width="250" height="250"/></div>
+      <div class="title">
+        <h1 class="border-bottom">Bee's Party</h1>
+      </div>
+      <div class="border"></div>
+      <div class="content">
+        <p>"Make Your Vote Count"<br />
+        </p>
+      <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+      <button class="button button1 marLeft70">
+        <a href="confirmation.html">Vote</a>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="img"><img src="{{url_for('static',filename='images/chick.png')}}" width="250" height="250"/></div>
+      <div class="title">
+        <h1 class="border-bottom">Chicken's Party</h1>
+      </div>
+      <div class="border"></div>
+      <div class="content">
+        <p>"For Country, For People"</p>
+        <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+        <button class="button button1 marLeft70">
+          <a href="confirmation.html">Vote</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!--- page wrap div end (modify end) -->
+<div class="footer">
+  <p>Copyright (c) 2205 Group 34. All rights reserved. <a href="http://www.alltemplates.com">< www.alltemplateneeds.com ></a></p>
+</div>
+</body>
+</html>
