@@ -1,39 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>TMPH00014</title>
-<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" type="text/css" />
-<link href='http://fonts.googleapis.com/css?family=Ropa+Sans' rel='stylesheet' type='text/css'>
-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'>
+  {% include 'common/head.html' %}
 </head>
 <body>
-<div class="header">
-  <div class="header-left-panel">
-    <div class="logo-wrap">
-      <div class="logo">
-        <h2>"YOUR VOTE MATTERS"</h2>
-        <h1>Digital Democracy Defenders</h1>
-      </div>
-    </div>
-  </div>
-  <div class="header-right-panel">
-    <div class="header-right-panel-top">
-      <p>Call Us : 0000 0000 
-      <p> <a href="#">Mail Us : 2102536@sit.singaporetech.edu.sg</a> 
-    </div>
-    <div class="menu">
-      <ul>
-        <li class="marRight20"><a class="active" href="{{url_for('index')}}" >home</a></li>
-        <li class="marRight20"><a href="{{url_for('about')}}">about</a></li>
-        <li><a href="services.html">login</a></li>
-        <li class="marRight20"><a href="features.html">TEST</a></li>
-        <li class="marRight20"><a href="#">TEST</a></li>
-        <li><a href="contact.html">TEST</a></li>
-      </ul>
-    </div>
-  </div>
-</div>
+  <!--- header div start -->
+  {% include 'common/nav.html' %}
+  <!--- header div end (Modify start) -->
 <!--- panel wrap div end -->
 <div class="page-wrap">
   <div class="page-wrapper">
@@ -61,10 +34,9 @@
         </div>
       </div>
     </div>
-
-<!--- page wrap div end -->
-<div class="footer">
-  <p>Copyright (c) websitename. All rights reserved. <a href="http://www.alltemplates.com">< www.alltemplateneeds.com ></a></p>
+  </div>
 </div>
+  <!--- page wrap div end (modify end) -->
+  {% include 'common/footer.html' %}
 </body>
 </html>
