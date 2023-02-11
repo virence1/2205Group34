@@ -21,8 +21,12 @@
         <div class="content">
           <p>"	Our Lives, Our Jobs, Our Future"</p>
             <!--- <div class="button-link"><a href="#">readmore</a></div> -->
-            <button class="button button1 marLeft70"onclick="showConfirmation()">
-              <a href="confirmation.html">Vote</a>
+            <button class="vote-button button marLeft70" onclick="showpopup()">Vote</button>
+            <div id="confirm-dialog" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid black;">
+              <p>Are you sure you want to confirm this action?</p>
+              <button class="button yes-button">Yes</button>
+              <button class="button no-button">No</button>
+            </div>
           </button>
         </div>
       </div>
@@ -38,9 +42,8 @@
         <div class="content">
           <p>"Make Your Vote Count"<br />
           </p>
-        <!--- <div class="button-link"><a href="#">readmore</a></div> -->
-        <button class="button button1 marLeft70">
-          <a href="confirmation.html">Vote</a>
+          <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+          <button class="vote-button button marLeft70" onclick="showpopup()">Vote</button>
         </div>
       </div>
       <div class="panel">
@@ -55,8 +58,8 @@
         <div class="content">
           <p>"For Country, For People"</p>
           <!--- <div class="button-link"><a href="#">readmore</a></div> -->
-          <button class="button button1 marLeft70">
-            <a href="confirmation.html">Vote</a>
+          <button class="vote-button button marLeft70" onclick="showpopup()">Vote</button>
+            <!--a href="confirmation.html">Vote</a>-->
         </div>
       </div>
     </div>
