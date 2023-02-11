@@ -5,7 +5,6 @@
 		<title>Login Page</title>
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css">
 		<link rel="stylesheet" href="{{ url_for('static', filename='css/loginstyles.css') }}">
-
 	</head>
 	<body>
 		<div class="login">

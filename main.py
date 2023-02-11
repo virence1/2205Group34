@@ -51,7 +51,15 @@ def home():
       return redirect(url_for("index"))
 
     # Otherwise, return a greeting
-    return "Hello, {}! You are logged in, to go back to the original homepage design just delete the cookie! This home page will have voting buttons upon login".format(session["username"])
+    #return "Hello, {}! You are logged in, to go back to the original homepage design just delete the cookie! This home page will have voting buttons upon login".format(session["username"])
+    return render_template('home.html')
+
+@app.route("/confirmation")
+def confirmation():
+  if "username" not in session:
+    return redirect(url_for("index"))
+  
+  return(render_template('confirmation.html'))
 
 #@app.route('/config')
 #def config():
