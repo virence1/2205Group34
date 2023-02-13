@@ -20,7 +20,10 @@
         <div class="border"></div>
         <div class="content">
           <p>"	Our Lives, Our Jobs, Our Future"</p>
-            <!--- <div class="button-link"><a href="#">readmore</a></div> -->            
+            <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+            <button class="button button1 marLeft70"onclick="showConfirmation()">
+              <!--<a href="confirmation.html">-->Vote</a>
+          </button>
         </div>
       </div>
       <div class="panel marRight30"id="vote-buttonB">
@@ -35,7 +38,9 @@
         <div class="content">
           <p>"Make Your Vote Count"<br />
           </p>
-          <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+        <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+        <button class="button button1 marLeft70" id="vote-buttonB">
+          <!--<a href="confirmation.html">-->Vote</a>
         </div>
       </div>
       <div class="panel">
@@ -49,7 +54,9 @@
         <div class="border"></div>
         <div class="content">
           <p>"For Country, For People"</p>
-          <!--- <div class="button-link"><a href="#">readmore</a></div> -->  
+          <!--- <div class="button-link"><a href="#">readmore</a></div> -->
+          <button class="button button1 marLeft70"id="vote-buttonC">
+            <!--<a href="confirmation.html">-->Vote</a>
         </div>
       </div>
     </div>
@@ -108,7 +115,7 @@ voteButtonA.addEventListener("click", function () {
 });
 confirmYesA.addEventListener("click", function () {
   confirmModalA.style.display = "none";
-  window.location = "confirmation.html";
+  window.location = "/confirmation";
 });
 confirmNoA.addEventListener("click", function () {
   confirmModalA.style.display = "none";
@@ -127,7 +134,7 @@ voteButtonB.addEventListener("click", function () {
 //
 confirmYesB.addEventListener("click", function () {
   confirmModalB.style.display = "none";
-  window.location = "confirmation.html";
+  window.location = "/confirmation";
   });
   confirmNoB.addEventListener("click", function () {
   confirmModalB.style.display = "none";
@@ -145,7 +152,7 @@ voteButtonC.addEventListener("click", function () {
 //
 confirmYesC.addEventListener("click", function () {
   confirmModalC.style.display = "none";
-  window.location = "confirmation.html";
+  window.location = "/confirmation";
   });
   confirmNoC.addEventListener("click", function () {
   confirmModalC.style.display = "none";
