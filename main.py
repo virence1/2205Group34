@@ -4,7 +4,7 @@ import pymysql
 app = Flask(__name__,)
 
 # Connect to the MariaDB database
-conn = pymysql.connect(host="localhost", user="root", password="", database="user_accounts")
+conn = pymysql.connect(host="localhost", user="root", password="abc123", database="user_accounts")
 
 # Set a secret key for the Flask session
 app.secret_key = "secret_key"
