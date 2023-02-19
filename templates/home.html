@@ -5,21 +5,21 @@
 </head>
 <body>
   <!--- header div start -->
-  {% include 'common/nav.html' %}
+  {% include 'common/navlogout.html' %}
   <!--- header div end (Modify start) -->
   <div class="panel-wrap">
     <div class="panel-wrapper">
       <div class="panel marRight30"id="vote-buttonA">
         <div class="img">
-          <img src="{{url_for('static',filename='images/koala.png')}}" width="250" height="250"/>
+          <img src="{{url_for('static',filename='images/candidate-1.jpg')}}" width="250" height="250"/>
           <!--<img src="/static/images/koala.png" width="250" height="250"/>-->
         </div>
         <div class="title">
-          <h1>Koala's Party</h1>
+          <h1>Jasminka Jurković</h1>
         </div>
         <div class="border"></div>
         <div class="content">
-          <p>"	Our Lives, Our Jobs, Our Future"</p>
+          <p>"Independent Candidate"</p>
             <!--- <div class="button-link"><a href="#">readmore</a></div> -->
             <button class="button button1 marLeft70"onclick="showConfirmation()">
               <!--<a href="confirmation.html">-->Vote</a>
@@ -28,15 +28,15 @@
       </div>
       <div class="panel marRight30"id="vote-buttonB">
         <div class="img">
-          <img src="{{url_for('static',filename='images/bee.png')}}" width="250" height="250"/>
+          <img src="{{url_for('static',filename='images/candidate-2.jpg')}}" width="250" height="250"/>
           <!--<img src="/static/images/bee.png" width="250" height="250"/>-->
         </div>
         <div class="title">
-          <h1 class="border-bottom">Bee's Party</h1>
+          <h1 class="border-bottom">Ray Pineda Alcaraz</h1>
         </div>
         <div class="border"></div>
         <div class="content">
-          <p>"Make Your Vote Count"<br />
+          <p>"Representing the XYZ Party"<br />
           </p>
         <!--- <div class="button-link"><a href="#">readmore</a></div> -->
         <button class="button button1 marLeft70" id="vote-buttonB">
@@ -45,15 +45,15 @@
       </div>
       <div class="panel">
         <div class="img">
-          <img src="{{url_for('static',filename='images/chick.png')}}" width="250" height="250"/>
+          <img src="{{url_for('static',filename='images/candidate-3.jpg')}}" width="250" height="250"/>
           <!--<img src="/static/images/chick.png" width="250" height="250"/>-->
         </div>
         <div class="title">
-          <h1 class="border-bottom">Chicken's Party</h1>
+          <h1 class="border-bottom">Asmarina Luwam</h1>
         </div>
         <div class="border"></div>
         <div class="content">
-          <p>"For Country, For People"</p>
+          <p>"Representing the ABC party"</p>
           <!--- <div class="button-link"><a href="#">readmore</a></div> -->
           <button class="button button1 marLeft70"id="vote-buttonC">
             <!--<a href="confirmation.html">-->Vote</a>
@@ -69,7 +69,7 @@
   <h2>Confirm Vote</h2>
   <p>Are you sure you want to submit your vote for A?</p>
   <div style="margin-top: 20px;">
-  <button id="confirm-yesA" style="background-color: green; color: white; padding: 10px 20px; border-radius: 5px;">Yes</button>
+  <button id="confirm-yesA" style="background-color: green; color: white; padding: 10px 20px; border-radius: 5px; ">Yes</button>
   <button id="confirm-noA" style="background-color: red; color: white; padding: 10px 20px; border-radius: 5px; margin-left: 20px;">No</button>
   </div>
   </div>
@@ -116,6 +116,7 @@ voteButtonA.addEventListener("click", function () {
 confirmYesA.addEventListener("click", function () {
   confirmModalA.style.display = "none";
   window.location = "/confirmation";
+  sendVote("JASMINKA JURKOVIĆ");
 });
 confirmNoA.addEventListener("click", function () {
   confirmModalA.style.display = "none";
@@ -135,6 +136,7 @@ voteButtonB.addEventListener("click", function () {
 confirmYesB.addEventListener("click", function () {
   confirmModalB.style.display = "none";
   window.location = "/confirmation";
+  sendVote("RAY PINEDA ALCARAZ");
   });
   confirmNoB.addEventListener("click", function () {
   confirmModalB.style.display = "none";
@@ -153,10 +155,27 @@ voteButtonC.addEventListener("click", function () {
 confirmYesC.addEventListener("click", function () {
   confirmModalC.style.display = "none";
   window.location = "/confirmation";
+  sendVote("ASMARINA LUWAM");
   });
   confirmNoC.addEventListener("click", function () {
   confirmModalC.style.display = "none";
   });
+
+function sendVote(vote){
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/vote");
+  xhr.setRequestHeader("Content-Type","application/json");
+  xhr.onload = function(){
+    if (xhr.status === 200) {
+      console.log("Thank you for voting!");
+    } else {
+      console.log("Error: " + xhr.statusText);
+    }
+  };
+  xhr.send(JSON.stringify({"vote": vote}));
+
+  }
+
 
 </script>
 

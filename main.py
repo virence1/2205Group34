@@ -1,5 +1,6 @@
 from flask import *
 import pymysql
+import secrets
 
 app = Flask(__name__,)
 
@@ -7,7 +8,7 @@ app = Flask(__name__,)
 conn = pymysql.connect(host="localhost", user="root", password="", database="user_accounts")
 
 # Set a secret key for the Flask session
-app.secret_key = "secret_key"
+app.secret_key = secrets.token_hex(16)
 
 @app.route("/")
 def index():
@@ -26,10 +27,17 @@ def login():
     return redirect(url_for("home"))
   return render_template('login.php')
 
+@app.route('/logout')
+def logout():
+  session.clear()
+  return redirect(url_for('index'))
+
 @app.route("/authenticate", methods=['POST'])
 def authenticate():
   username = request.form["username"]
   password = request.form["password"]
+  print(username)
+  print(password)
   
   cursor = conn.cursor()
   cursor.execute("SELECT * FROM account WHERE username=%s AND password=%s", (username, password))
@@ -54,6 +62,13 @@ def home():
     #return "Hello, {}! You are logged in, to go back to the original homepage design just delete the cookie! This home page will have voting buttons upon login".format(session["username"])
     return render_template('home.html')
 
+@app.route('/vote',methods=['POST'])
+def vote():
+  data=request.get_json()
+  print(data)
+  return 'OK'
+
+
 @app.route("/confirmation")
 def confirmation():
   if "username" not in session:
@@ -61,15 +76,7 @@ def confirmation():
   
   return(render_template('confirmation.html'))
 
-#@app.route('/config')
-#def config():
-#  referer = request.headers.get('Referer')
-#  if referer == "http://127.0.0.1:8080/authenticate":
-#    result=subprocess.run(["php", "config.php"], capture_output=True, text=True).stdout
-#    return result
- # else:
- #   return "Access Denied"
 
 
 if __name__ == "__main__":
-  app.run(host="127.0.0.1", port=8080, debug=False)
+  app.run(host="127.0.0.1", port=8080, debug=True)
