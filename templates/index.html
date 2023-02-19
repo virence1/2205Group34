@@ -9,7 +9,7 @@
   <!--- header div end (Modify start) -->
   <div class="panel-wrap">
     <div class="panel-wrapper">
-      <div class="panel marRight30">
+      <div class="panel marRight30"id="vote-buttonA">
         <div class="img">
           <img src="{{url_for('static',filename='images/koala.png')}}" width="250" height="250"/>
           <!--<img src="/static/images/koala.png" width="250" height="250"/>-->
@@ -23,7 +23,7 @@
             <!--- <div class="button-link"><a href="#">readmore</a></div> -->            
         </div>
       </div>
-      <div class="panel marRight30">
+      <div class="panel marRight30"id="vote-buttonB">
         <div class="img">
           <img src="{{url_for('static',filename='images/bee.png')}}" width="250" height="250"/>
           <!--<img src="/static/images/bee.png" width="250" height="250"/>-->
@@ -54,7 +54,129 @@
       </div>
     </div>
   </div>
-  <!--- page wrap div end (modify end) -->
+
+
+
+<!---confirmation prompt A-->
+<div id="confirm-modalA" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: hsl(240, 18%, 96%); padding: 40px; border-radius: 10px; box-shadow: 0px 0px 10px #888; text-align: center;">
+  <h2>Confirm Vote</h2>
+  <p>Are you sure you want to submit your vote for A?</p>
+  <div style="margin-top: 20px;">
+  <button id="confirm-yesA" style="background-color: green; color: white; padding: 10px 20px; border-radius: 5px;">Yes</button>
+  <button id="confirm-noA" style="background-color: red; color: white; padding: 10px 20px; border-radius: 5px; margin-left: 20px;">No</button>
+  </div>
+  </div>
+<!--confirmation promptA-->
+
+<!--confirmation prompt B-->
+<div id="confirm-modalB" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #f2f2f2; padding: 40px; border-radius: 10px; box-shadow: 0px 0px 10px #888; text-align: center;">
+  <h2>Confirm Vote</h2>
+  <p>Are you sure you want to submit your vote for B?</p>
+  <div style="margin-top: 20px;">
+  <button id="confirm-yesB" style="background-color: green; color: white; padding: 10px 20px; border-radius: 5px;">Yes</button>
+  <button id="confirm-noB" style="background-color: red; color: white; padding: 10px 20px; border-radius: 5px; margin-left: 20px;">No</button>
+  </div>
+  </div>
+<!--confirmation prompt B-->
+
+<!--confirmation prompt C-->
+<div id="confirm-modalC" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #f2f2f2; padding: 40px; border-radius: 10px; box-shadow: 0px 0px 10px #888; text-align: center;">
+  <h2>Confirm Vote</h2>
+  <p>Are you sure you want to submit your vote for C?</p>
+  <div style="margin-top: 20px;">
+  <button id="confirm-yesC" style="background-color: green; color: white; padding: 10px 20px; border-radius: 5px;">Yes</button>
+  <button id="confirm-noC" style="background-color: red; color: white; padding: 10px 20px; border-radius: 5px; margin-left: 20px;">No</button>
+  </div>
+  </div>
+<!--confirmation prompt C-->
+
+
+<!--- confirmation prompt yes or no part 1-->
+<script>
+  const voteButtonA = document.getElementById("vote-buttonA");
+  const voteButtonB = document.getElementById("vote-buttonB");
+  const voteButtonC= document.getElementById("vote-buttonC");
+///////////////////////////////////////////////////////
+
+//vote A
+const confirmModalA = document.getElementById("confirm-modalA");
+const confirmYesA = document.getElementById("confirm-yesA");
+const confirmNoA = document.getElementById("confirm-noA");
+
+voteButtonA.addEventListener("click", function () {
+  confirmModalA.style.display = "block";
+});
+
+
+
+
+// Define the selected option as a variable
+var selectedOption = "koala";
+confirmYesA.addEventListener("click", function () {
+  confirmModalA.style.display = "none";
+
+  // Send an AJAX request to submit the vote
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", "/vote", true);
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  xhr.send("vote=" + selectedOption); // Send the selected option as a parameter
+
+  // Redirect to the confirmation page
+  window.location = "confirmation.html";
+
+
+});
+
+
+
+
+
+confirmNoA.addEventListener("click", function () {
+  confirmModalA.style.display = "none";
+  });
+
+
+
+//Vote B
+const confirmModalB = document.getElementById("confirm-modalB");
+const confirmYesB = document.getElementById("confirm-yesB");
+const confirmNoB = document.getElementById("confirm-noB");
+//
+voteButtonB.addEventListener("click", function () {
+  confirmModalB.style.display = "block";
+});
+//
+confirmYesB.addEventListener("click", function () {
+  confirmModalB.style.display = "none";
+  window.location = "confirmation.html";
+  });
+  confirmNoB.addEventListener("click", function () {
+  confirmModalB.style.display = "none";
+  });
+
+
+//Vote C
+const confirmModalC = document.getElementById("confirm-modalC");
+const confirmYesC = document.getElementById("confirm-yesC");
+const confirmNoC = document.getElementById("confirm-noC");
+//
+voteButtonC.addEventListener("click", function () {
+  confirmModalC.style.display = "block";
+});
+//
+confirmYesC.addEventListener("click", function () {
+  confirmModalC.style.display = "none";
+  window.location = "confirmation.html";
+  });
+  confirmNoC.addEventListener("click", function () {
+  confirmModalC.style.display = "none";
+  });
+
+</script>
+
+
+
+<!--- page wrap div end (modify end) -->
   {% include 'common/footer.html' %}
 </body>
 </html>
