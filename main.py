@@ -29,7 +29,9 @@ def login():
 
 @app.route('/logout')
 def logout():
-  session.clear()
+  if "username" in session:
+    session.clear()
+    return redirect(url_for('index'))
   return redirect(url_for('index'))
 
 @app.route("/authenticate", methods=['POST'])
