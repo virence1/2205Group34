@@ -34,16 +34,14 @@ def logout():
 
 @app.route("/authenticate", methods=['POST'])
 def authenticate():
+  conn_new = pymysql.connect(host="localhost", user="root", password="", database="user_accounts")
   username = request.form["username"]
   password = request.form["password"]
-  print(username)
-  print(password)
-  
-  cursor = conn.cursor()
+  cursor = conn_new.cursor()
   cursor.execute("SELECT * FROM account WHERE username=%s AND password=%s", (username, password))
   result = cursor.fetchone()
   cursor.close()
-  conn.close()
+  conn_new.close()
 
   if result:
     # If the credentials exist, store the user's information in the session and return "success"
