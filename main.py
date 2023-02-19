@@ -4,7 +4,7 @@ import pymysql
 app = Flask(__name__,)
 
 # Connect to the MariaDB database
-conn = pymysql.connect(host="localhost", user="root", password="", database="user_accounts")
+conn = pymysql.connect(host="localhost", user="root", password="abc123", database="user_accounts")
 
 # Set a secret key for the Flask session
 app.secret_key = "secret_key"
@@ -35,7 +35,6 @@ def authenticate():
   cursor.execute("SELECT * FROM account WHERE username=%s AND password=%s", (username, password))
   result = cursor.fetchone()
   cursor.close()
-  conn.close()
 
   if result:
     # If the credentials exist, store the user's information in the session and return "success"
@@ -61,14 +60,34 @@ def confirmation():
   
   return(render_template('confirmation.html'))
 
-#@app.route('/config')
-#def config():
-#  referer = request.headers.get('Referer')
-#  if referer == "http://127.0.0.1:8080/authenticate":
-#    result=subprocess.run(["php", "config.php"], capture_output=True, text=True).stdout
-#    return result
- # else:
- #   return "Access Denied"
+
+@app.route("/vote", methods=['POST'])
+def vote():
+  if "username" not in session:
+    return redirect(url_for("index"))
+
+  # Get the current user's username
+  username = session["username"]
+
+  # Get the selected option from the AJAX request
+  selected_option = request.form["vote"]
+
+  # Connect to the database
+  conn = pymysql.connect(host="localhost", user="root", password="abc123", database="user_accounts")
+
+  # Get a cursor object to interact with the database
+  cursor = conn.cursor()
+
+  # Update the user's vote in the database
+  cursor.execute("UPDATE account SET vote=%s WHERE username=%s", (selected_option, username))
+  conn.commit()
+
+  # Close the cursor and database connection
+  cursor.close()
+  conn.close()
+
+  # Redirect the user back to the home page
+  return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
