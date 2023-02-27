@@ -1,3 +1,10 @@
+"""
+Dependencies
+sudo apt install pycrypto
+pip install diffiehellman
+"""
+
+
 import sys
 import os
 sys.path.append(os.path.join('..', 'diffiehellman'))
