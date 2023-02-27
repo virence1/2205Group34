@@ -1,3 +1,10 @@
+"""
+Dependencies
+sudo apt install pycrypto
+pip install pyDH
+"""
+
+
 import pyDH
 d1 = pyDH.DiffieHellman()
 d2 = pyDH.DiffieHellman()
