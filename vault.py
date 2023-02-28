@@ -44,8 +44,8 @@ def sendToNode3():
 
 def sendToNode1():
     print("Node 1 Function invoked.")
-    url = "http://20.81.121.55/endpoint"
-    data ={'vote':'Person A', 'nextNode' : 'xxx', 'remainingPath' : 'xxxx'}
+    url = "http://20.81.121.55/endpoint1"
+    data ={'vote':'Maria', 'nextNode' : 'D', 'remainingPath' : 'D'}
     response = requests.post(url, json=data)
 
     if response.status_code == 200:
@@ -57,4 +57,4 @@ def sendToNode1():
     return
 
 
-generatePath()
+sendToNode1()
