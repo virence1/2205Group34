@@ -32,14 +32,13 @@ def DH_AES():
     print('Ciphertext: ', binascii.hexlify(ciphertext).decode('utf-8'))
     print('Tag: ', binascii.hexlify(tag).decode('utf-8'))
     print("Decrypted message: ", decrypted_message)
-
+    print("\n")
     return iv + ciphertext + tag
 
 
 def sendToServer(payload):
-    #url = "http://20.106.233.101/endpointDestination"
-    url = "http://20.81.124.56/endpointDestination"
- 
+    
+    url = "http://20.185.31.43/endpoint3"
     
     data = {'message': base64.b64encode(payload).decode('utf-8')}
     response = requests.post(url, json=data)
@@ -47,11 +46,13 @@ def sendToServer(payload):
     if response.status_code == 200:
         print('Message sent successfully >>> ' + str(data))
         print('Message server reply >>> ' + response.text)
+        ciphertext = payload[AES.block_size:-AES.block_size]
+        ciphertext_hex = binascii.hexlify(ciphertext).decode('utf-8')
+        print('Ciphertext:', ciphertext_hex)
     else:
         print('Error sending message: {}'.format(response.text))
 
     return
-
 
 payload = DH_AES()
 sendToServer(payload)
