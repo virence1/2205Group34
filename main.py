@@ -1,6 +1,7 @@
 from flask import *
 import pymysql
 import secrets
+from vault import *
 
 app = Flask(__name__,)
 
@@ -65,7 +66,9 @@ def home():
 @app.route('/vote',methods=['POST'])
 def vote():
   data=request.get_json()
+  #testing with plain text username first 
   print(data)
+  sendToNode1()
   return 'OK'
 
 

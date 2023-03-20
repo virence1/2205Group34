@@ -1,5 +1,38 @@
 import requests
 import random
+from azure.identity import UsernamePasswordCredential
+from azure.keyvault.secrets import SecretClient
+from azure.identity import ClientSecretCredential
+from azure.keyvault.secrets import SecretClient
+
+def keyVault():
+
+
+# Define the Azure AD tenant ID, client ID, and client secret
+    tenant_id = "7fc78b60-eb18-4991-9d0b-1c06abe3f07e"
+    client_id = "08477e2d-4d95-41c2-879f-06e0e1a05956"
+    client_secret = "3HU8Q~zh9k7VHZA1NknQtEeeSEt7pumb_6MXwa3N"
+
+# Define the Azure Key Vault URL and secret name
+    vault_url = "https://ddd-key-vault.vault.azure.net/"
+    secret_name = "test-secret"
+
+# Define the username and password for the user you want to authenticate as
+
+# Create the credential object
+    credential = ClientSecretCredential(
+    tenant_id=tenant_id,
+    client_id=client_id,
+    client_secret=client_secret
+    )
+
+# Create the secret client object and retrieve the secret value
+    client = SecretClient(vault_url=vault_url, credential=credential)
+    secret_value = client.get_secret(secret_name).value
+
+    print(secret_value)
+    
+    
 
 def connect():
     return
@@ -57,4 +90,5 @@ def sendToNode1():
     return
 
 
-sendToNode1()
+#sendToNode1()
+keyVault()
