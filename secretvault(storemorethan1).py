@@ -9,8 +9,10 @@ def keyVault(mode, secret_value_to_store=None):
     client_secret = "3HU8Q~zh9k7VHZA1NknQtEeeSEt7pumb_6MXwa3N"
 
     vault_url = "https://ddd-key-vault.vault.azure.net/"
-    secret_name = "helloworld"
-
+    secret_name = "testing"
+    #to store extra secret
+    secret_name1= "testing1"
+    
     credential = ClientSecretCredential(
         tenant_id=tenant_id,
         client_id=client_id,
@@ -21,11 +23,15 @@ def keyVault(mode, secret_value_to_store=None):
 
     if mode == 'set':
         client.set_secret(secret_name, secret_value_to_store)
+        #to store extra secret
+        client.set_secret(secret_name1, secret_value_to_store)
         return "Secret stored successfully."
 
     elif mode == 'get':
         secret_value = client.get_secret(secret_name).value
-        return secret_value
+        #to store extra secret
+        secret_value2 = client.get_secret(secret_name1).value
+        return secret_value,secret_value2
 
     else:
         return "Invalid mode. Use 'set' or 'get'."
@@ -37,4 +43,8 @@ print(store_result)
 
 # Retrieve the secret value from the Key Vault to confirm it has been stored successfully
 secret_value = keyVault('get')
+#to store extra secret
+secret_value2=keyVault('get')
+#to store extra secret
 print(secret_value)
+print(secret_value2)
