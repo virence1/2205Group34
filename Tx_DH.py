@@ -1,6 +1,48 @@
 import math
 import requests
 from random import randint
+from azure.identity import UsernamePasswordCredential
+from azure.keyvault.secrets import SecretClient
+from azure.identity import ClientSecretCredential
+from azure.keyvault.secrets import SecretClient
+
+def keyVault():
+
+
+# Define the Azure AD tenant ID, client ID, and client secret
+    tenant_id = "7fc78b60-eb18-4991-9d0b-1c06abe3f07e"
+    client_id = "08477e2d-4d95-41c2-879f-06e0e1a05956"
+    client_secret = "3HU8Q~zh9k7VHZA1NknQtEeeSEt7pumb_6MXwa3N"
+
+# Define the Azure Key Vault URL and secret name
+    vault_url = "https://ddd-key-vault.vault.azure.net/"
+    secret_name = "test-secret"
+
+# Define the username and password for the user you want to authenticate as
+
+# Create the credential object
+    credential = ClientSecretCredential(
+    tenant_id=tenant_id,
+    client_id=client_id,
+    client_secret=client_secret
+    )
+
+# Create the secret client object and retrieve the secret value
+    client = SecretClient(vault_url=vault_url, credential=credential)
+    secret_value = client.get_secret(secret_name).value
+
+    print(secret_value)
+
+def connect():
+    return
+
+def generate():
+    return
+
+
+def store():
+    return
+
 
 def generate_public_key(a, p, g):
     r = (g**a)%p
@@ -80,7 +122,7 @@ def DH_algorithm():
     if key1 == key2:
         # User 1 - Encrypt and send message to user 2
         data1_in = "This is a test message from User 1 to User 2" # Secret message
-		data_encrypted1 = encrypt_string(data1_in, key1) # Encrypts message using the key
+        data_encrypted1 = encrypt_string(data1_in, key1) # Encrypts message using the key
         data1 = {"modulo": p, "Tx_publickey": r1, "data": data_encrypted1} # Sets up data packet to send
         return data1
     else:
