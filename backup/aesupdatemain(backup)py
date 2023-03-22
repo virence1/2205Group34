@@ -1,9 +1,9 @@
+import base64
+import binascii
+import requests
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util import Padding
-import requests
-import base64
-import binascii
 
 def encrypt_string(message, key):
     iv = get_random_bytes(AES.block_size)
@@ -33,27 +33,31 @@ def DH_AES():
     print('Tag: ', binascii.hexlify(tag).decode('utf-8'))
     print("Decrypted message: ", decrypted_message)
     print("\n")
-    return iv + ciphertext + tag
+    return iv, ciphertext, tag, key
 
 
-def sendToServer(payload):
-    
-    url = "http://20.185.31.43/endpoint3"
-    
-    data = {'message': base64.b64encode(payload).decode('utf-8')}
+def sendToServer(iv, ciphertext, tag, key):
+    url = "http://20.81.124.56/endpointDestination"
+    # url = "http://20.185.31.43/endpoint3" 
+    data = {'iv': binascii.hexlify(iv).decode('utf-8'),
+            'ciphertext': base64.b64encode(ciphertext).decode('utf-8'),
+            'tag': binascii.hexlify(tag).decode('utf-8'),
+            'key': binascii.hexlify(key).decode('utf-8')}
     response = requests.post(url, json=data)
 
     if response.status_code == 200:
         print('Message sent successfully >>> ' + str(data))
         print('Message server reply >>> ' + response.text)
-        ciphertext = payload[AES.block_size:-AES.block_size]
-        ciphertext_hex = binascii.hexlify(ciphertext).decode('utf-8')
-        print('Ciphertext:', ciphertext_hex)
-        
+        with open('sendToServer_history.txt', 'a') as f:
+            f.write('IV: ' + binascii.hexlify(iv).decode('utf-8') + '\n')
+            f.write('Ciphertext: ' + binascii.hexlify(ciphertext).decode('utf-8') + '\n')
+            f.write('Tag: ' + binascii.hexlify(tag).decode('utf-8') + '\n')
+            f.write('Key: ' + binascii.hexlify(key).decode('utf-8') + '\n')
+            f.write('Server Reply: ' + response.text + '\n\n')
     else:
         print('Error sending message: {}'.format(response.text))
 
     return
 
-payload = DH_AES()
-sendToServer(payload)
+iv, ciphertext, tag, key = DH_AES()
+sendToServer(iv, ciphertext, tag, key)
