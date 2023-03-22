@@ -7,8 +7,6 @@ from azure.identity import ClientSecretCredential
 from azure.keyvault.secrets import SecretClient
 
 def keyVault():
-
-
 # Define the Azure AD tenant ID, client ID, and client secret
     tenant_id = "7fc78b60-eb18-4991-9d0b-1c06abe3f07e"
     client_id = "08477e2d-4d95-41c2-879f-06e0e1a05956"
@@ -42,7 +40,6 @@ def generate():
 
 def store():
     return
-
 
 def generate_public_key(a, p, g):
     r = (g**a)%p
@@ -128,18 +125,53 @@ def DH_algorithm():
     else:
         print("Incorrect keys.")
 
-def sendToServer(payload):
-    url = "http://20.81.124.56/endpointDestination"
-    data ={'message':payload}
+def generatePath():
+    nodes=[1,2,3]
+    pathToDest = random.sample(nodes,len(nodes))
+    sendData(tuple(pathToDest))
+    for n in pathToDest:
+        print(n)
+    
+def sendData(order):
+    mapping = {
+        (1,2,3) : sendToNode1,
+        (1,3,2) : sendToNode1,
+        (2,1,3) : sendToNode2,
+        (2,3,1) : sendToNode2,
+        (3,1,2) : sendToNode3,
+        (3,2,1) : sendToNode3
+    }
+    function = mapping.get(order)
+    if function is not None:
+        function()
+    else:
+        print(f"Invalid order: {order}")
+    
+def sendToNode2():
+    print("Node 2 Function invoked.")
+    pass
+
+def sendToNode3():
+    print("Node 3 Function invoked.")
+    pass
+
+def sendToNode1():
+    print("Node 1 Function invoked.")
+    url = "http://20.81.121.55/endpoint1"
+    data ={'vote':'Maria', 'nextNode' : 'D', 'remainingPath' : 'D'}
     response = requests.post(url, json=data)
 
     if response.status_code == 200:
-        print('Message sent successfully >>> ' + str(data))
-        print('Message server reply >>> ' + response.text)
+        print(response.text)
+        print('Message sent successfully')
     else:
         print('Error sending message: {}'.format(response.text))
-
+    
     return
+
+
+#sendToNode1()
+keyVault()
 
 payload = DH_algorithm()
 sendToServer(payload)
