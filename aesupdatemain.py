@@ -22,7 +22,7 @@ def decrypt_string(iv, ciphertext, tag, key):
 
 
 def DH_AES():
-    message = "This is a secret message"
+    message = "This ff"
     key = get_random_bytes(32)
     iv, ciphertext, tag = encrypt_string(message, key)
     decrypted_message = decrypt_string(iv, ciphertext, tag, key)
@@ -62,12 +62,9 @@ def sendToServer(iv, ciphertext, tag, key):
 
 iv, ciphertext, tag, key = DH_AES()
 # Store the IV, key, and tag in the Key Vault
-keyVault('set', 'iv', iv.hex())
-keyVault('set', 'key', key.hex())
-keyVault('set', 'tag', tag.hex())
+keyVault('set', 'X2398754Y-AES-IV', iv.hex())
+keyVault('set', 'X2398754Y-AES-KEY', key.hex())
+keyVault('set', 'X2398754Y-AES-TAG', tag.hex())
 
-print("Stored IV: ", keyVault('get', 'iv'))
-print("Stored Key: ", keyVault('get', 'key'))
-print("Stored Tag: ", keyVault('get', 'tag'))
 
 sendToServer(iv, ciphertext, tag, key)
