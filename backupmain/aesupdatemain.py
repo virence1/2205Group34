@@ -22,7 +22,7 @@ def decrypt_string(iv, ciphertext, tag, key):
 
 
 def DH_AES():
-    message = "This TEST goodnight"
+    message = "This TEST asds  sd "
     key = get_random_bytes(32)
     iv, ciphertext, tag = encrypt_string(message, key)
     decrypted_message = decrypt_string(iv, ciphertext, tag, key)
@@ -37,19 +37,23 @@ def DH_AES():
     return iv, ciphertext, tag, key
 
 
-def sendToServer(payload):
+def sendToServer(iv, ciphertext, tag, key):
     url = "http://20.81.124.56/endpointDestination"
-    # url = "http://20.185.31.43/endpoint3"
-    response = requests.post(url, json=payload)
+    # url = "http://20.185.31.43/endpoint3" 
+    data = {'iv': binascii.hexlify(iv).decode('utf-8'),
+            'ciphertext': base64.b64encode(ciphertext).decode('utf-8'),
+            'tag': binascii.hexlify(tag).decode('utf-8'),
+            'key': binascii.hexlify(key).decode('utf-8')}
+    response = requests.post(url, json=data)
 
     if response.status_code == 200:
-        print('Message sent successfully >>> ' + str(payload))
+        print('Message sent successfully >>> ' + str(data))
         print('Message server reply >>> ' + response.text)
         with open('sendToServer_history.txt', 'a') as f:
-            f.write('IV: ' + payload['iv'] + '\n')
-            f.write('Ciphertext: ' + payload['ciphertext'] + '\n')
-            f.write('Tag: ' + payload['tag'] + '\n')
-            f.write('Key: ' + payload['key'] + '\n')
+            f.write('IV: ' + binascii.hexlify(iv).decode('utf-8') + '\n')
+            f.write('Ciphertext: ' + binascii.hexlify(ciphertext).decode('utf-8') + '\n')
+            f.write('Tag: ' + binascii.hexlify(tag).decode('utf-8') + '\n')
+            f.write('Key: ' + binascii.hexlify(key).decode('utf-8') + '\n')
             f.write('Server Reply: ' + response.text + '\n\n')
     else:
         print('Error sending message: {}'.format(response.text))
@@ -62,11 +66,5 @@ keyVault('set', 'X2398754Y-AES-IV', iv.hex())
 keyVault('set', 'X2398754Y-AES-KEY', key.hex())
 keyVault('set', 'X2398754Y-AES-TAG', tag.hex())
 
-payload = {
-    'iv': binascii.hexlify(iv).decode('utf-8'),
-    'ciphertext': base64.b64encode(ciphertext).decode('utf-8'),
-    'tag': binascii.hexlify(tag).decode('utf-8'),
-    'key': binascii.hexlify(key).decode('utf-8')
-}
 
-sendToServer(payload)
+sendToServer(iv, ciphertext, tag, key)
