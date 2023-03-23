@@ -2,7 +2,7 @@ from Crypto.Cipher import AES
 from Crypto.Util import Padding
 import binascii
 from secretvault import keyVault
-from aesupdatemain import DH_AES
+from aesupdatemain import aes_encrypt
 
 key_hex = keyVault('get', 'X2398754Y-AES-KEY')
 iv_hex = keyVault('get', 'X2398754Y-AES-IV')
@@ -13,7 +13,7 @@ iv = binascii.unhexlify(iv_hex)
 tag = binascii.unhexlify(tag_hex)
 
 # Call the DH_AES function from aesupdatemain.py to get the ciphertext directly
-iv, ciphertext, tag, key = DH_AES()
+iv, ciphertext, tag, key = aes_encrypt()
 ciphertext_hex = binascii.hexlify(ciphertext).decode('utf-8')
 
 cipher = AES.new(key, AES.MODE_GCM, iv)

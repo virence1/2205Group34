@@ -66,7 +66,7 @@ def receive_message():
         response = sendToNode3(message)
         return response
 
-    elif encrypted_ message['nextNode'] == 'D':
+    elif encrypted_message['nextNode'] == 'D':
         message['remainingPath'] = "NULL"
         response = sendToDestination(message)
         return response
