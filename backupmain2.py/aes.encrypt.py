@@ -15,8 +15,9 @@ import binascii
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 from Crypto.Util import Padding
+from secretvault import keyVault
 
-
+##
 app = Flask(__name__)
 
 @app.route("/")
@@ -27,85 +28,92 @@ def sendToNode1(message):
     url = "http://20.81.121.55/endpoint1"
     response = requests.post(url, json=message)
     if response.status_code == 200:
-        return "Node 1 received | " + response.text
+        return "Node 1 recieved | " + response.text
         print('Message sent successfully')
     else:
         return ('Error sending message: {}'.format(response.text))
+
+
 
 def sendToNode3(message):
     url = "http://20.185.31.43/endpoint3"
     response = requests.post(url, json=message)
     if response.status_code == 200:
-        return "Node 3 received | " + response.text
+        return "Node 1 recieved | " + response.text
         print('Message sent successfully')
     else:
         return('Error sending message: {}'.format(response.text))
+
+
 
 def sendToDestination(message):
     url = "http://20.81.124.56/endpointDestination"
     response = requests.post(url, json=message)
     if response.status_code == 200:
-        return "Destination received | " + response.text
+        return "Node 1 recieved | " + response.text
         print('Message sent successfully')
     else:
         return ('Error sending message: {}'.format(response.text))
-
-@app.route("/endpoint2", methods=['POST'])
+        
+        
+@app.route("/endpoint2",methods=['POST'])
 def receive_message():
-    message = request.get_json()
-    encrypted_message = aes_encrypt(message)
+    message=request.get_json()
+    encrypted_message=aes_encrypt(message)
     if encrypted_message['nextNode'] == '3':
         pathLeft = message['remainingPath']
         newpathLeft = pathLeft[1:]
         response = sendToNode3(message)
         return response
+
     elif encrypted_message['nextNode'] == '1':
         pathLeft = message['remainingPath']
         newpathLeft = pathLeft[1:]
         response = sendToNode1(message)
         return response
+
     elif encrypted_message['nextNode'] == 'D':
         message['remainingPath'] = "NULL"
         response = sendToDestination(message)
         return response
 
+##
 def aes_encrypt(payload):
-    # Define the Azure AD tenant ID, client ID, and client secret
-    tenant_id = "7fc78b60-eb18-4991-9d0b-1c06abe3f07e"
-    client_id = "08477e2d-4d95-41c2-879f-06e0e1a05956"
-    client_secret = "3HU8Q~zh9k7VHZA1NknQtEeeSEt7pumb_6MXwa3N"
-
-    # Define the Azure Key Vault URL
-    vault_url = "https://ddd-key-vault.vault.azure.net/"
-
-    # Create the credential object
-    credential = ClientSecretCredential(
-        tenant_id=tenant_id,
-        client_id=client_id,
-        client_secret=client_secret
-    )
-
-    # Create the secret client object
-    client = SecretClient(vault_url=vault_url, credential=credential)
-
-    # Generate a random AES key and IV
+    message = "Abcf"
     key = get_random_bytes(32)
-    iv = get_random_bytes(AES.block_size)
 
-    # Encrypt the message using AES-GCM
+    iv = get_random_bytes(AES.block_size)
     cipher = AES.new(key, AES.MODE_GCM, iv)
-    padded_message = Padding.pad(payload['vote'].encode('utf-8'), AES.block_size)
+    padded_message = Padding.pad(message.encode('utf-8'), AES.block_size)
     ciphertext, tag = cipher.encrypt_and_digest(padded_message)
 
-    # Store the AES key, IV, and tag in the Key Vault
-    client.set_secret(name='X2398754Y-AES-IV', value=key)
-    client.set_secret(name='X2398754Y-AES-KEY', value=iv)
-    client.set_secret(name='X2398754Y-AES-TAG', value=tag)
+    # Store the IV, key, and tag in the Key Vault
+    keyVault('set', 'X2398754Y-AES-IV', iv.hex())
+    keyVault('set', 'X2398754Y-AES-KEY', key.hex())
+    keyVault('set', 'X2398754Y-AES-TAG', tag.hex())
 
-    # Update the payload with the encrypted message
-    vote = binascii.hexlify(ciphertext).decode('utf-8')
-    payload['vote'] = vote
+    # Print the IV, key, and tag
+    print("IV: " + iv.hex())
+    print("Key: " + key.hex())
+    print("Tag: " + tag.hex())
 
-    return payload
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    payload['vote'] = base64.b64encode(ciphertext).decode('utf-8')
+    
+    url = "http://20.81.124.56/endpointDestination"
+    response = requests.post(url, json=payload)
+
+    if response.status_code == 200:
+        print('Message sent successfully >>> ' + str(payload))
+        print('Message server reply >>> ' + response.text)
+        with open('sendToServer_history.txt', 'a') as f:
+            f.write('IV: ' + binascii.hexlify(iv).decode('utf-8') + '\n')
+            f.write('vote: ' + binascii.hexlify(ciphertext).decode('utf-8') + '\n')
+            f.write('Tag: ' + binascii.hexlify(tag).decode('utf-8') + '\n')
+            f.write('Key: ' + binascii.hexlify(key).decode('utf-8') + '\n')
+            f.write('Server Reply: ' + response.text + '\n\n')
+    else:
+        print('Error sending message: {}'.format(response.text))
+
+payload = {}
+aes_encrypt(payload)
+
