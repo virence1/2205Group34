@@ -21,6 +21,6 @@ try:
     plaintext = cipher.decrypt_and_verify(ciphertext, tag)
     plaintext = Padding.unpad(plaintext, AES.block_size)
     plaintext_str = plaintext.decode('utf-8')
-    print("Decrypted message: ", plaintext_str)
+    print("Decrypted message (Important): ", plaintext_str)
 except ValueError:
     print("Incorrect decryption, message may have been tampered with")

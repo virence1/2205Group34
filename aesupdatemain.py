@@ -22,7 +22,7 @@ def decrypt_string(iv, ciphertext, tag, key):
 
 
 def DH_AES():
-    message = "This ff"
+    message = "This TEST asds  sd "
     key = get_random_bytes(32)
     iv, ciphertext, tag = encrypt_string(message, key)
     decrypted_message = decrypt_string(iv, ciphertext, tag, key)
