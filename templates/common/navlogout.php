@@ -14,10 +14,10 @@
       </div>
       <div class="menu">
         <ul>
-          <li class="marRight20"><a href="{{url_for('index')}}">home</a></li>
-          <li class="marRight20"><a href="{{url_for('about')}}">about</a></li>
-          <li><a href="{{url_for('login')}}">login</a></li>
-          <li><a href="#">TEST</a></li>
+          <li class="marRight20"><a href="{{ index_url }}">home</a></li>
+          <li class="marRight20"><a href="{{ about_url }}">about</a></li>
+          <li><a href="{{url_for('logout')}}">logout</a></li>
+          <li class="marRight20"><a href="#">{{ username }}</a></li>
         </ul>
       </div>
     </div>
