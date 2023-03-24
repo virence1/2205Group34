@@ -22,13 +22,13 @@ from random import randint
 def hello():
     return "<h1 style='color:blue'>Testing Page</h1>"
 	
-@app.route("/dh_RxstorepubK",methods=['POST'])
+@app.route("/dh_destPubKey",methods=['POST'])
 def receive_message():
     message=request.get_json()
-    dh_RxstorepubK(message)
+    dh_destPubKey(message)
     return 'Success 200'
 	
-def dh_RxstorepubK(payload):
+def dh_destPubKey(payload):
     # Get Tx public key, p and g value from the key vault
     pdh = payload['user']+"-"+"DIFFIEHELLMAN"+"-MODULUS"
     gdh = payload['user']+"-"+"DIFFIEHELLMAN"+"-BASE"
