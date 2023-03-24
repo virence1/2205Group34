@@ -1,1 +1,0 @@
-    secret_name1= "testing1"
