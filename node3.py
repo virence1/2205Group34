@@ -44,8 +44,8 @@ def sendToDestination(message):
 @app.route("/endpoint3",methods=['POST'])
 def receive_message():
     message=request.get_json()
-    dh_TxstorepubK(message)
-    dh_RxstorepubK(message)
+    dh_n3PubKey(message)
+    dh_destPubKey(message)
     encrypted_message=dh_encrypt(message)
     if encrypted_message['nextNode'] == '1':
         pathLeft = encrypted_message['remainingPath']
@@ -64,7 +64,7 @@ def receive_message():
         response = sendToDestination(encrypted_message)
         return response
 		
-def dh_TxstorepubK(payload):
+def dh_n3PubKey(payload):
     # Generate the modulus and base values
     p = base_DH.gen_prime(2000, 6000) #modulus
     g = base_DH.gen_prime(500, 1000) #base
@@ -88,8 +88,8 @@ def dh_TxstorepubK(payload):
         f.write(str(Tx_privK))
     f.close()
 		
-def dh_RxstorepubK(message):
-    url = "http://20.81.124.56/dh_RxstorepubK"
+def dh_destPubKey(message):
+    url = "http://20.81.124.56/dh_destPubKey"
     response = requests.post(url, json=message)
     if response.status_code == 200:
         return "Node 3 received | " + response.text
