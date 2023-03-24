@@ -39,9 +39,9 @@ def aes_decrypt(payload):
 
     # Define the Azure Key Vault URL and secret names
     vault_url = "https://ddd-key-vault.vault.azure.net/"
-    secret_iv_name = payload['users'] + "-AES-IV"
-    secret_key_name = payload['users'] + "-AES-KEY"
-    secret_tag_name = payload['users'] + "-AES-TAG"
+    secret_iv_name = payload['user'] + "-AES-IV"
+    secret_key_name = payload['user'] + "-AES-KEY"
+    secret_tag_name = payload['user'] + "-AES-TAG"
 
     # Create the credential object
     credential = ClientSecretCredential(
@@ -68,6 +68,7 @@ def aes_decrypt(payload):
     ciphertext = binascii.a2b_base64(ciphertext_b64)
 
     # Decrypt the ciphertext using the AES key, IV, and tag
+    plaintext_str = None  # Initialize the variable here
     cipher = AES.new(key, AES.MODE_GCM, iv)
     try:
         plaintext = cipher.decrypt_and_verify(ciphertext, tag)
@@ -78,7 +79,8 @@ def aes_decrypt(payload):
         print("Incorrect decryption, vote may have been tampered with")
 
     # Update the payload with the decrypted message
-    payload['vote'] = plaintext_str
+    if plaintext_str is not None:
+        payload['vote'] = plaintext_str
     return payload['vote']
 
 
@@ -97,3 +99,6 @@ def update_votebank(name):
     mydb.commit()
     return "Candidate " + candidate + " vote updated in votebank database."
 
+json_payload = {'vote': 'wv1L37tg/XnCg604TKHRYQ==', 'user': 'X2398754Y', 'combo': '231D', 'nextNode': '3', 'remainingPath': '1D'}
+aes_decrypt(json_payload)
+print(json_payload)

@@ -17,11 +17,7 @@ from Crypto.Random import get_random_bytes
 from Crypto.Util import Padding
 
 
-app = Flask(__name__)
 
-@app.route("/")
-def hello():
-    return "<h1 style='color:blue'>Hello There!</h1>"
 
 def sendToNode1(message):
     url = "http://20.81.121.55/endpoint1"
@@ -50,7 +46,6 @@ def sendToDestination(message):
     else:
         return ('Error sending message: {}'.format(response.text))
 
-@app.route("/endpoint2", methods=['POST'])
 def receive_message():
     message = request.get_json()
     encrypted_message = aes_encrypt(message)
@@ -97,15 +92,24 @@ def aes_encrypt(payload):
     padded_message = Padding.pad(payload['vote'].encode('utf-8'), AES.block_size)
     ciphertext, tag = cipher.encrypt_and_digest(padded_message)
 
-    # Store the AES key, IV, and tag in the Key Vault
-    client.set_secret(name='X2398754Y-AES-IV', value=key)
-    client.set_secret(name='X2398754Y-AES-KEY', value=iv)
-    client.set_secret(name='X2398754Y-AES-TAG', value=tag)
 
+
+    secretkey=payload['user'] + "-AES-KEY"
+    secretiv=payload['user'] + "-AES-IV"
+    secrettag=payload['user'] + "-AES-TAG"
+    
+    client.set_secret(name=secretkey, value=binascii.hexlify(key).decode('utf-8'))
+    client.set_secret(name=secretiv, value=binascii.hexlify(iv).decode('utf-8'))
+    client.set_secret(name=secrettag, value=binascii.hexlify(tag).decode('utf-8'))
+        
     # Update the payload with the encrypted message
-    vote = binascii.hexlify(ciphertext).decode('utf-8')
+   # vote = binascii.hexlify(ciphertext).decode('utf-8')
+    #vote = base64.b64encode(ciphertext + tag).decode('utf-8')
+    vote = base64.b64encode(ciphertext).decode('utf-8')
     payload['vote'] = vote
 
     return payload
-if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+#json_payload = {'vote': 'gg', 'combo':'132D', 'nextNode': 'None', 'remainingPath':'None', 'user': 'account_username'}
+json_payload = {"vote": "aacbc", "user": "X2398754Y", "combo": "231D", "nextNode": "3", "remainingPath": "1D"}
+aes_encrypt(json_payload)
+print(json_payload)
