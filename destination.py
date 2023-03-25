@@ -22,7 +22,7 @@ from random import randint
 def hello():
     return "<h1 style='color:blue'>Testing Page</h1>"
 	
-@app.route("/dh_destPubKey",methods=['POST'])
+@app.route("/loading",methods=['POST'])
 def receive_message():
     message=request.get_json()
     dh_destPubKey(message)
