@@ -101,7 +101,7 @@ def receive_message():
             hashed_payload=hash_payload(payload)
             response = sendToNode2(hashed_payload)
             return "30UWU"+response
-        elif nextNode == 'G':
+        elif nextNode == 'P':
             updatedPathLeft = encrypted_message['remainingPath'][1:]
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'G'
