@@ -17,53 +17,105 @@ def sendToNode1(message):
     url = "http://20.81.121.55/endpoint1"
     response = requests.post(url, json=message)
     if response.status_code == 200:
-        return "Node 3 received | " + response.text
-        print('Message sent successfully')
+        return "10" + response.text
     else:
-        return('Error sending message to Node 1 : {}'.format(response.text))
+        return "60"
 
 def sendToNode2(message):
     url = "http://20.106.233.101/endpoint2"
     response = requests.post(url, json=message)
     if response.status_code == 200:
-        return "Node 3 received | " + response.text
-        print('Message sent successfully')
+        return "20" + response.text
     else:
-        return ('Error sending message to Node 2 : {}'.format(response.text))
+        return "70"
 
 def sendToDestination(message):
     url = "http://20.81.124.56/endpointDestination"
     response = requests.post(url, json=message)
     if response.status_code == 200:
-        return "Node 3 received | " + response.text
-        print('Message sent successfully')
+        return "40" + response.text
     else:
-        return ('Error sending message to Destination : {}'.format(response.text))
+        return "90"        
 
+def hash_payload(payload):
+    # Compute the HMAC-SHA256 digest of the payload using the secret key
+    secret_key = keyVault('get', "tamper-secret")
+    payload_str = json.dumps(payload)  # convert the dictionary to a string
+    digest = hmac.new(secret_key.encode(), msg=payload_str.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
+    keyVault('set', "PAYLOAD-NODE3-DIGEST", digest)
+    return payload
 
+def verify_digest(payload):
+    if payload['prevNode'] == 'Z':
+        secret_key = keyVault('get', "tamper-secret")
+        prev_node_digest = keyVault('get', "PAYLOAD-LIVE-DIGEST")
+        payload_str = json.dumps(payload)
+        computed_digest = hmac.new(secret_key.encode(), msg=payload_str.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
+        if computed_digest == prev_node_digest:
+            return True
+        else:
+            return False
+    elif payload['prevNode'] == 'P':
+        secret_key = keyVault('get', "tamper-secret")
+        prev_node_digest = keyVault('get', "PAYLOAD-NODE1-DIGEST")
+        payload_str = json.dumps(payload)
+        computed_digest = hmac.new(secret_key.encode(), msg=payload_str.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
+        if computed_digest == prev_node_digest:
+            return True
+        else:
+            return False
+    elif payload['prevNode'] == 'B':
+        secret_key = keyVault('get', "tamper-secret")
+        prev_node_digest = keyVault('get', "PAYLOAD-NODE2-DIGEST")
+        payload_str = json.dumps(payload)
+        computed_digest = hmac.new(secret_key.encode(), msg=payload_str.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
+        if computed_digest == prev_node_digest:
+            return True
+        else:
+            return False
+    elif payload['prevNode'] == 'G':
+        secret_key = keyVault('get', "tamper-secret")
+        prev_node_digest = keyVault('get', "PAYLOAD-NODE3-DIGEST")
+        payload_str = json.dumps(payload)
+        computed_digest = hmac.new(secret_key.encode(), msg=payload_str.encode('utf-8'), digestmod=hashlib.sha256).hexdigest()
+        if computed_digest == prev_node_digest:
+            return True
+        else:
+            return False
+ 
 @app.route("/endpoint3",methods=['POST'])
 def receive_message():
     message=request.get_json()
-    dh_n3PubKey(message)
-    dh_destPubKey(message)
-    encrypted_message=dh_encrypt(message)
-    if encrypted_message['nextNode'] == '1':
-        pathLeft = encrypted_message['remainingPath']
-        newpathLeft = pathLeft[1:]
-        response = sendToNode1(encrypted_message)
-        return response
+    result=verify_digest(message)
+    if result == True:
+        dh_n3PubKey(message)
+        dh_destPubKey(message)
+        encrypted_message = dh_encrypt(message)
+        nextNode = encrypted_message['remainingPath'][0]
+        if nextNode == 'B':
+            updatedPathLeft = encrypted_message['remainingPath'][1:]
+            encrypted_message['remainingPath'] = updatedPathLeft
+            encrypted_message['prevNode'] = 'G'
+            hashed_payload=hash_payload(payload)
+            response = sendToNode2(hashed_payload)
+            return "30UWU"+response
+        elif nextNode == 'G':
+            updatedPathLeft = encrypted_message['remainingPath'][1:]
+            encrypted_message['remainingPath'] = updatedPathLeft
+            encrypted_message['prevNode'] = 'G'
+            hashed_payload=hash_payload(payload)
+            response = sendToNode3(hashed_payload)
+            return "30UWU"+response
+        elif nextNode == 'W':
+            updatedPathLeft = encrypted_message['remainingPath'][1:]
+            encrypted_message['remainingPath'] = updatedPathLeft
+            encrypted_message['prevNode'] = 'G'
+            hashed_payload=hash_payload(payload)
+            response = sendToDestination(hashed_payload)
+            return "30UWU"+response
+    else:
+        return "NOUWU"
 	
-    elif encrypted_message['nextNode'] == '2':
-        pathLeft = encrypted_message['remainingPath']
-        newpathLeft = pathLeft[1:]
-        response = sendToNode2(encrypted_message)
-        return response
-
-    elif encrypted_message['nextNode'] == 'D':
-        encrypted_message['remainingPath'] = "NULL"
-        response = sendToDestination(encrypted_message)
-        return response
-		
 def dh_n3PubKey(payload):
     # Generate the modulus and base values
     p = base_DH.gen_prime(2000, 6000) #modulus
@@ -87,15 +139,14 @@ def dh_n3PubKey(payload):
     with open('Tx_privK.txt', 'w') as f:
         f.write(str(Tx_privK))
     f.close()
-		
+
 def dh_destPubKey(message):
     url = "http://20.81.124.56/loading"
     response = requests.post(url, json=message)
     if response.status_code == 200:
-        return "Node 3 received | " + response.text
-        print('Message sent successfully')
+        return "32" + response.text
     else:
-        return ('Error sending message to Destination : {}'.format(response.text))
+        return "82"
 
 def dh_encrypt(payload):		
     # Retrieves the public keys and p value from the key vault
@@ -111,7 +162,7 @@ def dh_encrypt(payload):
     f = open('Tx_privK.txt', 'r')
     Tx_privK = f.read()
     f.close()
-	
+
     # Derives the secret key from the Tx side
     Tx_secretK = base_DH.decode_public_key(int(Rx_pubK), int(Tx_privK), int(p))
 
@@ -126,7 +177,7 @@ def dh_encrypt(payload):
     f = open('Tx_privK.txt', 'w')
     f.write('')
     f.close()
-	
+
     payload['vote'] = encryptedtext
     return payload
 
