@@ -29,6 +29,7 @@ def sendData(order,vote):
     if function is not None:
         modified_order = ('L',) + order + ('D',)
         response=function(vote, ''.join(map(str, modified_order)))  # use modified_order instead of order
+        return response
         
         
     else:
