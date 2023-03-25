@@ -3,9 +3,9 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 import json
-import base_DH
 import hmac
 import hashlib
+import base_DH
 from secretvault import keyVault
 from random import randint
 
@@ -106,7 +106,7 @@ def receive_message():
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'G'
             hashed_payload=hash_payload(payload)
-            response = sendToNode3(hashed_payload)
+            response = sendToNode1(hashed_payload)
             return "30UWU"+response
         elif nextNode == 'W':
             updatedPathLeft = encrypted_message['remainingPath'][1:]
@@ -115,6 +115,8 @@ def receive_message():
             hashed_payload=hash_payload(payload)
             response = sendToDestination(hashed_payload)
             return "30UWU"+response
+        else:
+            return "80UWU"
     else:
         return "NOUWU"
 	
@@ -180,7 +182,7 @@ def dh_encrypt(payload):
     f.write('')
     f.close()
 
-    payload['vote'] = encryptedtext
+    payload['vote'] = str(encryptedtext)
     return payload
 
 if __name__ == "__main__":
