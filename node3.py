@@ -4,6 +4,8 @@ import logging
 from logging.handlers import RotatingFileHandler
 import json
 import base_DH
+import hmac
+import hashlib
 from secretvault import keyVault
 from random import randint
 
