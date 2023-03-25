@@ -89,7 +89,7 @@ def dh_n3PubKey(payload):
     f.close()
 		
 def dh_destPubKey(message):
-    url = "http://20.81.124.56/dh_destPubKey"
+    url = "http://20.81.124.56/loading"
     response = requests.post(url, json=message)
     if response.status_code == 200:
         return "Node 3 received | " + response.text
