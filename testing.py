@@ -10,9 +10,11 @@ import hmac
 import hashlib
    
 
+
 def generatePath(vote):
     nodes=[1,2,3]
     pathToDest = random.sample(nodes,len(nodes))
+    print(pathToDest)
     response=sendData(tuple(pathToDest),vote)
     return response
     
@@ -201,11 +203,12 @@ def sendToNode2(payload,combo):
 
 
 def sendToNode3(payload,combo):
-    encrypted_path =  mapCombo(combo) # this will map it to what we have agreed upon
+    encrypted_path =   mapCombo(combo)# this will map it to what we have agreed upon
     next_node = encrypted_path[1] # updating next node
+    print(next_node)
     remaining_path = encrypted_path[2:]
     payload['combo'] = encrypted_path
-    payload['nextNode'] = next_node
+    payload['nextNode'] = 'P'
     payload['remainingPath'] = remaining_path
     payload['prevNode'] = encrypted_path[0]
     hashed_payload=hash_payload(payload)
@@ -242,3 +245,6 @@ def sendToNode1(payload,combo):
         return ('Error sending message: {}'.format(response.text))
     
 
+json_payload = {"vote": "8QlKJWnkiJPsgo9gV9ylIg==", "user": "X2398754Y"}
+response = generatePath(json_payload)
+print(response)
