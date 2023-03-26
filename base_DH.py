@@ -48,7 +48,7 @@ def decrypt_string(encrypted_str, secret_key):
 def gen_prime(start, stop):
     mod_list = []
     # Generate list of prime numbers
-    for num in range(start, stop):
+    for num in range(start, stop-1):
         if num > 1:
             for i in range(2, num):
                 if (num % i) == 0:
