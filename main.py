@@ -65,25 +65,34 @@ def home():
     out = sp.run(["php", "templates/home.php", username], stdout=sp.PIPE)
     return out.stdout
 
+@app.route("/alreadyVoted")
+def alreadyVoted():
+  if "username" not in session:
+    return redirect(url_for("index"))
+  
+  out = sp.run(["php", "templates/alreadyVoted.php"], stdout=sp.PIPE)
+  return out.stdout
 
 
 @app.route('/vote', methods=['post', 'get'])
 def vote():
   if "username" not in session:
     return redirect(url_for("index"))
+  
+  # Check if user has already voted
   vote_value = request.form["vote_value"]
   account_username = request.form["account_username"]
-  out = sp.run(["php", "templates/vote.php", vote_value, account_username], stdout=sp.PIPE)
-  return out.stdout
 
-
-@app.route("/confirmation")
-def confirmation():
-  if "username" not in session:
-    return redirect(url_for("index"))
+  db = pymysql.connect(host="localhost", user="root", password="", database="user_accounts")
+  cursor = db.cursor()
+  cursor.execute("SELECT voteStatus FROM account WHERE username = %s", (account_username,))
+  result = cursor.fetchone()
   
-  return(render_template('confirmation.html'))
-
+  if result and result[0] == 1:
+    return redirect(url_for("alreadyVoted"))
+  else:
+    out = sp.run(["php", "templates/vote.php", vote_value, account_username], stdout=sp.PIPE)
+    return out.stdout 
 
 
 if __name__ == "__main__":

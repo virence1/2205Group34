@@ -14,6 +14,13 @@ def generatePath(vote):
     nodes=[1,2,3]
     pathToDest = random.sample(nodes,len(nodes))
     response=sendData(tuple(pathToDest),vote)
+
+    output_dict = {
+    "returnResponse": response
+    }
+    with open("resultStatus.json", "w") as status_file:
+        json.dump(output_dict, status_file)
+
     return response
     
 def sendData(order,vote):

@@ -9,8 +9,10 @@ $username = $argv[1];
   <?php
     include 'common/head.html';
   ?>
+  <script src="../static/js/app.js"></script>
 </head>
 <body>
+  
   <!--- header div start -->
   <div class="header">
     <div class="header-left-panel">
@@ -52,7 +54,7 @@ $username = $argv[1];
           <p>"Independent Candidate"</p>
           <form class="voting-form" action="/vote" method="post">
             <input type="hidden" name="account_username" id="account_username" value="<?php echo $username; ?>">
-            <button type="submit" value="Jasminka Jurković" class="button button1 marLeft70" name="vote_value" id="vote_value">Vote</button>
+            <button type="submit" value="Jasminka Jurkovic" class="button button1 marLeft70" name="vote_value" id="vote_value">Vote</button>
           </form>
         </div>
       </div>

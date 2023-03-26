@@ -16,6 +16,13 @@ def generatePath(vote):
     pathToDest = random.sample(nodes,len(nodes))
     print(pathToDest)
     response=sendData(tuple(pathToDest),vote)
+
+    output_dict = {
+    "returnResponse": response
+    }
+    with open("yeet.json", "w") as status_file:
+        json.dump(output_dict, status_file)
+
     return response
     
 def sendData(order,vote):
@@ -245,6 +252,6 @@ def sendToNode1(payload,combo):
         return ('Error sending message: {}'.format(response.text))
     
 
-json_payload = {"vote": "8QlKJWnkiJPsgo9gV9ylIg==", "user": "X2398754Y"}
+json_payload = {"vote": "k7LcsPZ9tMC818rzDDtYiv5FLZ8aFZ1Em3WcyrfLESM=", "user": "X2398754Y"}
 response = generatePath(json_payload)
 print(response)
