@@ -27,7 +27,7 @@ increment_value = 69
 for key in str_dict:
     str_dict[key] = str(int(str_dict[key]) + increment_value)
 
-# Encrypt the string with the secret ke
+# Encrypt the string with the secret key
 def encrypt_string(string_in, secret_key):
     string_as_num = "".join((str_dict[string_in[n]] for n in range(0,len(string_in))))
     return int(string_as_num) * secret_key

@@ -3,9 +3,9 @@ import requests
 import logging
 from logging.handlers import RotatingFileHandler
 import json
+import base_DH
 import hmac
 import hashlib
-import base_DH
 from secretvault import keyVault
 from random import randint
 
@@ -14,7 +14,7 @@ app = Flask(__name__)
 @app.route("/")
 def hello():
     return "<h1 style='color:blue'>Hello There!</h1>"
-	
+
 def sendToNode1(message):
     url = "http://20.81.121.55/endpoint1"
     response = requests.post(url, json=message)
@@ -37,7 +37,7 @@ def sendToDestination(message):
     if response.status_code == 200:
         return "40" + response.text
     else:
-        return "90"        
+        return "90"
 
 def hash_payload(payload):
     # Compute the HMAC-SHA256 digest of the payload using the secret key
@@ -84,42 +84,42 @@ def verify_digest(payload):
             return True
         else:
             return False
- 
+
 @app.route("/endpoint3",methods=['POST'])
 def receive_message():
     message=request.get_json()
     result=verify_digest(message)
     if result == True:
         dh_n3PubKey(message)
-        dh_destPubKey(message)
+        intermediate_response=dh_destPubKey(message)
         encrypted_message = dh_encrypt(message)
         nextNode = encrypted_message['remainingPath'][0]
         if nextNode == 'B':
             updatedPathLeft = encrypted_message['remainingPath'][1:]
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'G'
-            hashed_payload=hash_payload(payload)
+            hashed_payload=hash_payload(encrypted_message)
             response = sendToNode2(hashed_payload)
-            return "30UWU"+response
+            return "30UWU"+intermediate_response+response
         elif nextNode == 'P':
             updatedPathLeft = encrypted_message['remainingPath'][1:]
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'G'
-            hashed_payload=hash_payload(payload)
+            hashed_payload=hash_payload(encrypted_message)
             response = sendToNode1(hashed_payload)
-            return "30UWU"+response
+            return "30UWU"+intermediate_response+response
         elif nextNode == 'W':
             updatedPathLeft = encrypted_message['remainingPath'][1:]
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'G'
-            hashed_payload=hash_payload(payload)
+            hashed_payload=hash_payload(encrypted_message)
             response = sendToDestination(hashed_payload)
-            return "30UWU"+response
-        else:
+            return "30UWU"+intermediate_response+response
+        elif nextNode == 'G':
             return "80UWU"
     else:
         return "NOUWU"
-	
+
 def dh_n3PubKey(payload):
     # Generate the modulus and base values
     p = base_DH.gen_prime(2000, 6000) #modulus
@@ -152,7 +152,7 @@ def dh_destPubKey(message):
     else:
         return "82"
 
-def dh_encrypt(payload):		
+def dh_encrypt(payload):
     # Retrieves the public keys and p value from the key vault
     RxpubKdh = payload['user']+"-"+"DIFFIEHELLMAN"+"-RXPUBLICKEY"
     pdh = payload['user']+"-"+"DIFFIEHELLMAN"+"-MODULUS"
@@ -161,7 +161,7 @@ def dh_encrypt(payload):
 
     # "plaintext" variable is to be replaced with the relevant code during integration
     plaintext = payload['vote']
-	
+
     # Reads the private key of the Tx side
     f = open('Tx_privK.txt', 'r')
     Tx_privK = f.read()
