@@ -1,9 +1,7 @@
-
 from flask import Flask, request
 import requests
 import logging
 from logging.handlers import RotatingFileHandler
-import json
 from azure.identity import UsernamePasswordCredential
 from azure.keyvault.secrets import SecretClient
 from azure.identity import ClientSecretCredential
@@ -15,7 +13,7 @@ import base64
 import binascii
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
-from Crypto.Util import Padding
+from Crypto.Util.Padding import pad
 import hmac
 import hashlib
 import json
@@ -119,49 +117,6 @@ def retrieve_secret(name): # NOTHING TO CHANGE HERE
     secret_value = client.get_secret(name).value
     return secret_value
 ###################################################################################
-def store_secret(name,value): # NOTHING TO CHANGE HERE
-    # Define the Azure AD tenant ID, client ID, and client secret
-    tenant_id = "7fc78b60-eb18-4991-9d0b-1c06abe3f07e"
-    client_id = "08477e2d-4d95-41c2-879f-06e0e1a05956"
-    client_secret = "3HU8Q~zh9k7VHZA1NknQtEeeSEt7pumb_6MXwa3N"
-
-    # Define the Azure Key Vault URL
-    vault_url = "https://ddd-key-vault.vault.azure.net/"
-
-    # Create the credential object
-    credential = ClientSecretCredential(
-        tenant_id=tenant_id,
-        client_id=client_id,
-        client_secret=client_secret
-    )
-
-    # Create the secret client object and store the secret value
-    client = SecretClient(vault_url=vault_url, credential=credential)
-    client.set_secret(name, value)
-    
-    return
-
-def retrieve_secret(name): # NOTHING TO CHANGE HERE
-    # Define the Azure AD tenant ID, client ID, and client secret
-    tenant_id = "7fc78b60-eb18-4991-9d0b-1c06abe3f07e"
-    client_id = "08477e2d-4d95-41c2-879f-06e0e1a05956"
-    client_secret = "3HU8Q~zh9k7VHZA1NknQtEeeSEt7pumb_6MXwa3N"
-
-    # Define the Azure Key Vault URL
-    vault_url = "https://ddd-key-vault.vault.azure.net/"
-
-    # Create the credential object
-    credential = ClientSecretCredential(
-        tenant_id=tenant_id,
-        client_id=client_id,
-        client_secret=client_secret
-    )
-
-    # Create the secret client object and store the secret value
-    client = SecretClient(vault_url=vault_url, credential=credential)
-    secret_value = client.get_secret(name).value
-    return secret_value
-    
 
 def hash_payload(payload): # NEED TO CHANGE FOR UR OWN NODE 
     # Compute the HMAC-SHA256 digest of the payload using the secret key
@@ -223,21 +178,21 @@ def receive_message():
             updatedPathLeft = encrypted_message['remainingPath'][1:]
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'B' # CHANGE THIS TO UR OWN NODE NUMBER'S LETTER
-            hashed_payload=hash_payload(payload)
+            hashed_payload=hash_payload(encrypted_message)
             response = sendToNode3(hashed_payload)  ## I CHANGE
             return "20UWU"+response #update the number before UWU to ur own node
         elif nextNode == 'P': ## I CHANGE
             updatedPathLeft = encrypted_message['remainingPath'][1:]
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'B' # CHANGE THIS TO YOUR OWN NODE NUMBER'S LETTER
-            hashed_payload=hash_payload(payload)
-            response = sendToNode3(hashed_payload)
+            hashed_payload=hash_payload(encrypted_message)
+            response = sendToNode1(hashed_payload)
             return "20UWU"+response #update the number before UWU to ur own node
         elif nextNode == 'W':
             updatedPathLeft = encrypted_message['remainingPath'][1:]
             encrypted_message['remainingPath'] = updatedPathLeft
             encrypted_message['prevNode'] = 'B' # CHANGE THIS TO YOUR OWN NODE NUMBER'S LETTER
-            hashed_payload=hash_payload(payload)
+            hashed_payload=hash_payload(encrypted_message)
             response = sendToDestination(hashed_payload)
             return "20UWU"+response #update the number before UWU to ur own node
     else:
@@ -245,6 +200,7 @@ def receive_message():
 
 
 def aes_encrypt(payload):
+
     # Define the Azure AD tenant ID, client ID, and client secret
     tenant_id = "7fc78b60-eb18-4991-9d0b-1c06abe3f07e"
     client_id = "08477e2d-4d95-41c2-879f-06e0e1a05956"
@@ -263,39 +219,61 @@ def aes_encrypt(payload):
     # Create the secret client object
     client = SecretClient(vault_url=vault_url, credential=credential)
 
+    #For debugging, printing payload to sendhalp.json
+    # with open("sendhalp.json", "w") as json_file:
+    #     json.dump(payload, json_file)
+
     # Generate a random AES key and IV
     key = get_random_bytes(32)
     iv = get_random_bytes(AES.block_size)
 
-    # Encrypt the message using AES-GCM
-    cipher = AES.new(key, AES.MODE_GCM, iv)
-    padded_message = Padding.pad(payload['vote'].encode('utf-8'), AES.block_size)
-    ciphertext, tag = cipher.encrypt_and_digest(padded_message)
-
-
-
-    secretkey=payload['user'] + "-AES-KEY"
-    secretiv=payload['user'] + "-AES-IV"
-    secrettag=payload['user'] + "-AES-TAG"
+    # Encrypt the message using AES-CBC
+    cipher = AES.new(key, AES.MODE_CBC, iv)
     
-    client.set_secret(name=secretkey, value=binascii.hexlify(key).decode('utf-8'))
-    client.set_secret(name=secretiv, value=binascii.hexlify(iv).decode('utf-8'))
-    client.set_secret(name=secrettag, value=binascii.hexlify(tag).decode('utf-8'))
-        
-    # Update the payload with the encrypted message
-   # vote = binascii.hexlify(ciphertext).decode('utf-8')
-    #vote = base64.b64encode(ciphertext + tag).decode('utf-8')
-    vote = base64.b64encode(ciphertext).decode('utf-8')
-    payload['vote'] = vote
+    #Debugging
+    # helloworld = type(payload['vote'])
+    # with open("cipherType.txt", "w") as text_file:
+    #     json.dump(str(helloworld), text_file)
+
+    plaintext = payload['vote'].encode('utf-8')
+    #print(type(plaintext))
+
+    padded_text = pad(plaintext, AES.block_size)
+    ciphertext = cipher.encrypt(padded_text)
+
+    #For debugging, printing payload to json
+    #with open("paddedCode.json", "w") as padded_file:
+    #    json.dump(payload, padded_file)
+
+    # Base64-encode the encrypted ciphertext
+    encrypted_data = base64.b64encode(ciphertext).decode('utf-8')
+
+    secret_key= payload['user'] + "-AES-KEY"
+    secret_iv= payload['user'] + "-AES-IV"
+    key_base64 = base64.b64encode(key).decode('utf-8')
+    iv_base64 = base64.b64encode(iv).decode('utf-8')
+
+    print(key_base64)
+    print(iv_base64)
+
+    client.set_secret(name=secret_key, value=key_base64)
+    client.set_secret(name=secret_iv, value=iv_base64)
+    payload['vote'] = encrypted_data
+
+    #Debugging
+    # with open("encryptedVote.json", "w") as encrypted_file:
+    #     json.dump(payload, encrypted_file)
+
+    # type_check = type(payload['vote'])
+    # with open("paddedCipherType.txt", "w") as encryptText_file:
+    #     json.dump(str(type_check), encryptText_file)
+    
+    # #For debugging, printing payload to encryptedAES.json
+    # with open("encryptedAES.json", "w") as aes_file:
+    #     json.dump(payload, aes_file)
 
     return payload
 
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
-
-
-
-
-#json_payload = {'vote': 'Jasminka Jurković', 'user': 'X2398754Y', 'combo': 'ZGBPW', 'nextNode': 'G', 'remainingPath': 'BPW', 'prevNode': 'Z'}
-#aes_encrypt(json_payload)
-#print(json_payload)
