@@ -18,7 +18,7 @@
             <div class="panel-wrapper">
                 <div class="already-voted">
                     <h1>Error, unable to vote!</h1>
-                    <p>You have already voted. If this is an error, please contract the administrator at admin@getsomehelp.com</p>
+                    <p>You have already voted. If this is an error, please contract the administrator at 2102536@sit.singaporetech.edu.sg</p>
                     <a href='/logout'><button>Logout</button></a>
                 </div>
             </div>
